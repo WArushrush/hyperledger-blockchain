@@ -136,7 +136,7 @@ Submit a `query_customer` transaction:
 }
 ```
 
-PART TWO 智能合约逻辑
+PART TWO 智能合约逻辑:
 
 在“Order”阶段，首先系统根据客户的坐标确定运费。之后客户可对我们的平台提交订单（指定一个平台、商品编号、商家）。商家将用户记录在cust数组中，将对应商品编号存入commidToDeliver，并将“指针”变量i“index”+1。将通过commodities数组用商品编号索引出商品价值，平台根据商品价格对s客户进行收款。此时，客户的存款减去相应的金额，平台c存款增加。
 
