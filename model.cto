@@ -37,6 +37,11 @@ asset Platform identified by ID{
   o Double deposit
   o Double[] commidToPay//待付款值
   o Integer index//指待付款
+  o Integer Total//执行的订单总数
+  o Integer Finish//完成的订单总数
+  -->Merchant[] domer//记录对应执行订单的用户
+  -->Customer[] docus//记录对应执行订单的商家
+  o String[] state//记录对应执行订单的的状态
   --> Merchant[] merc//相应要付款的商家
 }
 
