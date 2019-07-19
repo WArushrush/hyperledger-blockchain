@@ -11,6 +11,10 @@ async function Order(tx){
     tx.mc.index += 1;                           //对应商家订单总数加一
     tx.ct.deposit -= tx.mc.commodities[tx.num]+Math.sqrt((tx.mc.x-tx.x)*(tx.mc.x-tx.x)+(tx.mc.y-tx.y)*(tx.mc.y-tx.y));//对应客户付款
     tx.pt.deposit += tx.mc.commodities[tx.num]+Math.sqrt((tx.mc.x-tx.x)*(tx.mc.x-tx.x)+(tx.mc.y-tx.y)*(tx.mc.y-tx.y));//对应平台收款
+    tx.pt.domer[tx.pt.Total]=tx.mc;
+    tx.pt.docus[tx.pt.Total]=tx.ct;
+    tx.pt.state[tx.pt.Total]="Unfinished";
+    tx.pt.Total +=1;
     const assetRegistry1 = await getAssetRegistry('org.example.empty.Merchant');//等待更新
     await assetRegistry1.update(tx.mc);
     const assetRegistry2 = await getAssetRegistry('org.example.empty.Platform');
@@ -32,11 +36,11 @@ async function Order(tx){
     let num=tx.mc.commidToDeliver[0];//取出第一个要送的商品，对应顾客和对应平台
     let ct = tx.mc.cust[0];
     let pt = tx.mc.plat[0];
-    for(i=0;i<tx.mc.index;i++){
-        tx.mc.commidToDeliver[i]=tx.mc.commidToDeliver[i+1];
-        tx.mc.cust[i]=tx.mc.cust[i+1];
-        tx.mc.plat[i]=tx.mc.plat[i+1];
-    }//所有订单号对应的商品，顾客和平台都前移一个
+    //所有订单号对应的商品，顾客和平台都前移一个
+    //删除最后一个订单信息
+    tx.mc.commidToDeliver.shift();
+    tx.mc.cust.shift();
+    tx.mc.plat.shift();
     //对应平台要付的货款加1，对应到对应的货款和商家
     pt.commidToPay[pt.index] = tx.mc.commodities[num];
     pt.merc[pt.index] = tx.mc;
@@ -60,12 +64,12 @@ async function Order(tx){
 async function Pay(tx){
     tx.pt.deposit-=tx.pt.commidToPay[0];//平台支付货款
     tx.pt.merc[0].deposit+=tx.pt.commidToPay[0];//商家收款
-    for(i=0;i<tx.pt.index-1;i++){
-        tx.pt.commidToPay[i]=tx.pt.commidToPay[i+1];
-        tx.pt.merc[i]=tx.pt.merc[i+1];
-    }
+    tx.pt.state[tx.pt.Finish]="Finished";
+    tx.pt.Finish +=1;
     const assetRegistry1 = await getAssetRegistry('org.example.empty.Merchant');
     await assetRegistry1.update(tx.pt.merc[tx.pt.index-1]);
+    tx.pt.merc.shift();
+    tx.pt.commidToPay.shift();
     tx.pt.index-=1;//平台待支付价款减一
     const assetRegistry2 = await getAssetRegistry('org.example.empty.Platform');
     await assetRegistry2.update(tx.pt);
@@ -95,5 +99,4 @@ async function Pay(tx){
    }
   console.log(money);
   return money;
-  
   }
