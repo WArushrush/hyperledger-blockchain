@@ -1,6 +1,6 @@
 # Order Something!
 
-基础网络定义:
+PART ONE 基础网络定义:
 
 **Participant**
 `Person`
@@ -139,6 +139,8 @@ Submit a `query_customer` transaction:
     "id": ""
 }
 ```
+
+PART TWO 智能合约实现逻辑：
 
 在“Order”阶段，首先系统根据客户的坐标确定运费。之后客户可对我们的外卖平台提交订单（指定一个平台、商品编号、商家）。商家将用户记录在cust数组中，将订单存入对应平台数组plat中，将对应商品编号存入commidToDeliver，并将“指针”变量“index”+1。将通过commodities数组用商品编号索引出商品价值，平台根据商品价格和运费对客户进行收款，此时，客户的存款减去相应的金额，平台存款增加。同时，平台将此时相关联的客户、商家计入平台维护的数组docus和domer中，将该单状态存储为“unfinished”状态。平台正在执行的订单总数“Total”+1。
 
